@@ -1,5 +1,5 @@
 
-Names = new Mongo.Collection('names');
+People = new Mongo.Collection('people');
 
 
 let Demo = React.createClass({
@@ -11,26 +11,27 @@ let Demo = React.createClass({
   getMeteorData(){
     return {
       // meteor mongo fetch
-      names: Names.find().fetch()
+      people: People.find().fetch()
     }
   },
 
 
-  // hello method
-  hello(){
+  // insertName method
+  insertName(){
     console.log(this.refs.name.value);
+    People.insert({name: this.refs.name.value });
   },
 
 
   render() {
-    console.log(this.data.names);
+    console.log(this.data.people);
     return (
       <div>
         <input ref="name"/>
-        <button onClick={this.hello}>Ok</button>
+        <button onClick={this.insertName}>Ok</button>
         <ul>
           {
-            this.data.names.map(function(name){
+            this.data.people.map(function(name){
               return (
                 <li key={name._id}>{name.name}</li>
               )
