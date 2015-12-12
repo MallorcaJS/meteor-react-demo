@@ -17,7 +17,14 @@ var Person = React.createClass({
 		console.log(this.state.editing);
 	},
 	render(){
-		return <li key={this.props.person._id} onClick={this.personClicked}>{this.props.person.name}</li>
+		let html;
+		if(this.state.editing){
+			html = <input type="text" defaultValue={this.props.person.name}/>
+			// Mutable Warning with value vs defaultValue
+		} else{
+			html = <li key={this.props.person._id} onClick={this.personClicked}>{this.props.person.name}</li>
+		}
+		return html
 	}
 })
 
