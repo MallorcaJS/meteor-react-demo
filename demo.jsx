@@ -6,8 +6,18 @@ var Person = React.createClass({
 	propTypes:{
 		person: React.PropTypes.object.isRequired
 	},
+	getInitialState(){
+		return {
+			editing: false
+		}
+	},
+	personClicked(){
+		//State
+		this.setState({editing: !this.state.editing});
+		console.log(this.state.editing);
+	},
 	render(){
-		return <li key={this.props.person._id}>{this.props.person.name}</li>
+		return <li key={this.props.person._id} onClick={this.personClicked}>{this.props.person.name}</li>
 	}
 })
 
