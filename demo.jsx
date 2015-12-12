@@ -2,9 +2,11 @@ var Demo = React.createClass({
 	render(){
 
 		return (
-			<h1>Hello World from React Component</h1><p>NEW NODE</p>
-			// console.server log => demo.jsx:5:44: demo.jsx: Adjacent JSX elements must be wrapped in an enclosing tag (5:44)
-	)
+			<div>
+				<input type="text"/>
+				<button>Hola</button>
+			</div>
+		)
 	}
 
 });
