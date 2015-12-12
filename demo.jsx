@@ -4,17 +4,23 @@ Names = new Mongo.Collection('names');
 
 let Demo = React.createClass({
 
+  // import the meteor data mixin 
   mixins: [ReactMeteorData],
 
+  // fetch data and return it as object
   getMeteorData(){
     return {
+      // meteor mongo fetch
       names: Names.find().fetch()
     }
   },
 
+
+  // hello method
   hello(){
     console.log(this.refs.name.value);
   },
+
 
   render() {
     console.log(this.data.names);
