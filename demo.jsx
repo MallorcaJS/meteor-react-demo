@@ -1,3 +1,7 @@
+//Talk about autopublish / pub-sub paradigm in Meteor
+People = new Mongo.Collection("People");
+
+
 var Demo = React.createClass({
 	render(){
 
