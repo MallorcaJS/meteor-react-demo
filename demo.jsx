@@ -2,6 +2,15 @@
 People = new Mongo.Collection("People");
 
 
+var Person = React.createClass({
+	propTypes:{
+		person: React.PropTypes.object.isRequired
+	},
+	render(){
+		return <li key={this.props.person._id}>{this.props.person.name}</li>
+	}
+})
+
 var Demo = React.createClass({
 	mixins: [ReactMeteorData],
 
@@ -35,7 +44,7 @@ var Demo = React.createClass({
 					{
 						this.data.people.map(
 							(person) => {
-								return <li key={person._id}>{person.name}</li>
+								return <Person key={person._id} person={person}/>
 							}
 						)
 					}
