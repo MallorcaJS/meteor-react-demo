@@ -1,6 +1,46 @@
 
 People = new Mongo.Collection('people');
 
+let Person = React.createClass({
+  propTypes:{
+
+    name: React.PropTypes.string,
+    changePerson: React.PropTypes.func,
+
+  },
+
+  getInitialState(){
+    return {
+      editing: false,
+    }
+  },
+
+  edit(){
+     this.setState({
+      editing: !this.state.editing
+     })
+  },
+
+  changeName(event){
+    if (event.charCode === 13){
+      People.update({_id: this.props.key},{$set:{ name: this.refs.input.value}});
+    }
+
+
+  },
+
+  render(){
+    if (this.state.editing){
+      return (
+          <input ref="input" type="text" defaultValue={this.props.name} onKeyPress={this.changeName}/>
+        )
+    } else {
+      return (
+        <li onClick={this.edit}> {this.props.name}</li>
+      )
+    }
+  }
+})
 
 let Demo = React.createClass({
 
@@ -31,9 +71,10 @@ let Demo = React.createClass({
         <button onClick={this.insertName}>Ok</button>
         <ul>
           {
-            this.data.people.map(function(name){
+            this.data.people.map(function(person){
               return (
-                <li key={name._id}>{name.name}</li>
+                <Person key={person._id} name={person.name}/>
+                // <li key={name._id}><input type="text" value={name.name} /></li>                  
               )
             })
           }
