@@ -3,36 +3,44 @@ People = new Mongo.Collection('people');
 
 let Person = React.createClass({
   propTypes:{
-
-    name: React.PropTypes.string,
-    id: React.PropTypes.string,
-    changePerson: React.PropTypes.func,
+    person: React.PropTypes.object,
+    updatePerson: React.PropTypes.func,
     selectPerson: React.PropTypes.func,
     editing: React.PropTypes.bool
-
   },
 
-  changeName(event){
-    if (event.charCode === 13){
-      People.update({_id: this.props.id},{$set:{ name: this.refs.input.value}});
-      this.select();
+  updatePerson(){
+    if (this.refs.name.value.length === 0){
+      People.remove({_id: this.props.person._id});
+    } else {
+      People.update({_id: this.props.person._id},{$set:{ name: this.refs.name.value}});
     }
+    this.props.selectPerson(null);
   },
 
-  clickPerson(event){
-    event.preventDefault();
-    this.props.selectPerson(this.props.id);
-    this.refs.input.value = "";
+  selectPerson(){
+    this.props.selectPerson(this.props.person._id);
   },
 
   render(){
     if (this.props.editing){
       return (
-          <input ref="input" type="text" defaultValue={this.props.name} onKeyPress={this.changeName}/>
+          // <input ref="input" type="text" className="form-control btn-lg" defaultValue={this.props.name} onKeyPress={this.changeName} autoFocus/>
+          <div className="media">
+            <div className="media-body">
+               <input ref="name" className="col-xs-10  btn-lg"  defaultValue={this.props.person.name} autoFocus/>
+               <button onClick={this.updatePerson}  className="col-xs-2 btn btn-primary btn-lg">Update</button>
+             </div>
+          </div>
         )
     } else {
       return (
-        <li onClick={this.clickPerson}> {this.props.name}</li>
+
+        <li onClick={this.selectPerson} className="media">
+            <div className="media-body">
+              <h3>{this.props.person.name}</h3>
+            </div>
+        </li>
       )
     }
   }
@@ -57,49 +65,36 @@ let Demo = React.createClass({
     }
   },
 
-
-
   // insertName method
-  insertName(){
-    console.log(this.refs.name.value);
+  insertName(event){
     People.insert({name: this.refs.name.value });
+    this.refs.name.value = "";
   },
 
   selectPerson(id){
-    console.log(id);
-
     this.setState({
-      selectedPerson: id
+      selectedPerson: id ? id : null
     });
-
   },
-
-  isEditing(id){
-    if ( this.state.editing === id){
-      return true;
-    } else {
-      return false
-    }
-  },
-
-
 
   render() {
     console.log(this.data.people);
     return (
-      <div>
-        <input ref="name"/>
-        <button onClick={this.insertName}>Ok</button>
-        <ul>
-          {
-            this.data.people.map((person) => {
-              return (
-                <Person selectPerson={this.selectPerson} key={person._id} id={person._id} name={person.name} editing={person._id === this.state.selectedPerson} />
-              )
-            })
-          }
-        </ul>
-      </div>
+        <div className="panel-body">
+            <input ref="name" className="col-xs-8 btn-lg" placeholder="Anadir Persona"/>
+            <button onClick={this.insertName} className="col-xs-3 col-xs-offset-1 btn btn-success btn-lg">Add</button>
+            <div className="clearfix"></div>
+            <hr/>
+            <h5>{this.data.people.length} people in MallorcaJS</h5>
+            <hr/>
+            <ul className="media-list">
+              {this.data.people.reverse().map((person, index)=>{
+                return (
+                  <Person selectPerson={this.selectPerson} key={index} person={person} editing={person._id === this.state.selectedPerson} />
+                )
+              })}
+            </ul>
+        </div>
     )
   }
 })
