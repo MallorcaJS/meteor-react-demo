@@ -4,26 +4,22 @@ People = new Mongo.Collection("People");
 
 var Person = React.createClass({
 	propTypes:{
-		person: React.PropTypes.object.isRequired
-	},
-	getInitialState(){
-		return {
-			editing: false
-		}
+		person: React.PropTypes.object.isRequired,
+		editing: React.PropTypes.bool,
+		setSelectedPerson: React.PropTypes.func,
+		updatePerson: React.PropTypes.func
 	},
 	personClicked(){
-		//State
-		this.setState({editing: !this.state.editing});
+		this.props.setSelectedPerson(this.props.person._id);
 	},
 	keyPressed(event){
 		if(event.charCode === 13){
-			People.update({_id:this.props.person._id},{$set:{name: this.refs.inputRefPerson.value}});
-			this.personClicked();
+			this.props.updatePerson({_id:this.props.person._id,name: this.refs.inputRefPerson.value})
 		}
 	},
 	render(){
 		let html;
-		if(this.state.editing){
+		if(this.props.editing){
 			html = <input type="text" defaultValue={this.props.person.name} onKeyPress={this.keyPressed} ref="inputRefPerson"/>
 			// Mutable Warning with value vs defaultValue
 		} else{
@@ -38,7 +34,7 @@ var Demo = React.createClass({
 
 	getInitialState(){
 		return {
-			//people: [{name:'Kevin',_id:'1'},{name:'Rafa',_id:'2'}]
+			selectedPerson: null
 		}
 	},
 	getMeteorData(){
@@ -56,6 +52,18 @@ var Demo = React.createClass({
 		//Clean INput text
 		personName.value = "";
 	},
+	updatePerson(person){
+		People.update({_id:person._id},{$set:{name: person.name}});
+		this.setSelectedPerson();
+
+	},
+	setSelectedPerson(id){
+
+		this.setState({
+			selectedPerson: id ? id : null
+		});
+	},
+
 	render(){
 
 		return (
@@ -66,7 +74,11 @@ var Demo = React.createClass({
 					{
 						this.data.people.map(
 							(person) => {
-								return <Person key={person._id} person={person}/>
+								return <Person key={person._id}
+								               person={person}
+								               editing={this.state.selectedPerson === person._id}
+								               setSelectedPerson={this.setSelectedPerson}
+								               updatePerson={this.updatePerson}/>
 							}
 						)
 					}
