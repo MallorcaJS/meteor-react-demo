@@ -14,12 +14,17 @@ var Person = React.createClass({
 	personClicked(){
 		//State
 		this.setState({editing: !this.state.editing});
-		console.log(this.state.editing);
+	},
+	keyPressed(event){
+		if(event.charCode === 13){
+			People.update({_id:this.props.person._id},{$set:{name: this.refs.inputRefPerson.value}});
+			this.personClicked();
+		}
 	},
 	render(){
 		let html;
 		if(this.state.editing){
-			html = <input type="text" defaultValue={this.props.person.name}/>
+			html = <input type="text" defaultValue={this.props.person.name} onKeyPress={this.keyPressed} ref="inputRefPerson"/>
 			// Mutable Warning with value vs defaultValue
 		} else{
 			html = <li key={this.props.person._id} onClick={this.personClicked}>{this.props.person.name}</li>
